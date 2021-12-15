@@ -1,7 +1,7 @@
 <template>
   <div class="choose-address">
     <div class="row">
-      <div class="col-xs-12 col-md-5 col-sm-5 col-lg-5 col-xl-2">
+      <div class="col-xs-12 col-md-5 col-sm-6 col-lg-5 col-xl-5">
         <label v-if="addLabels">Город</label>
         <multiselect
             class="address-form form-city"
@@ -22,7 +22,7 @@
           <span slot="noResult">Нет результатов</span>
         </multiselect>
       </div>
-      <div class="col-xs-12 col-md-5 col-sm-5 col-lg-5 col-xl-2">
+      <div class="col-xs-12 col-md-4 col-sm-6 col-lg-5 col-xl-5">
         <label  v-if="addLabels">Улица</label>
 
         <multiselect
@@ -46,7 +46,7 @@
         </multiselect>
       </div>
 
-      <div class="col-xs-12 col-md-2 col-sm-2 col-lg-2 col-xl-2">
+      <div class="col-xs-12 col-md-3 col-sm-4 col-lg-2 col-xl-2">
         <label  v-if="addLabels">Дом</label>
         <multiselect
             class="address-form form-house"
@@ -338,6 +338,7 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="bootstrap/dist/css/bootstrap.min.css"></style>
 
 <style>
 .address-form {
@@ -345,7 +346,6 @@ export default {
   font-size: 14px;
 }
 .address-form .multiselect__tags {
-  height: 22px;
   font-size: 14px;
 }
 .address-form .multiselect__content-wrapper .multiselect__content .multiselect__element .multiselect__option--highlight {
@@ -353,8 +353,6 @@ export default {
 }
 .address-form .multiselect__tags .multiselect__tags-wrap .multiselect__tag  {
     padding: 4px 26px 4px 10px;
-  margin-bottom: 3px;
-  margin-right: 3px;
     background-color: #2A3F54;
 }
 .address-form .multiselect__tags .multiselect__tags-wrap .multiselect__tag .multiselect__tag-icon  {
