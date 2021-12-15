@@ -1,66 +1,105 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>{{baseUrl}}</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="container-fluid">
+    <div class="row" v-if="loading">
+      <div class="col-sm-12">
+        <Preloader/>
+      </div>
+    </div>
+    <div class="row" v-if="!loading && error === ''">
+      <div class="col-sm-12 col-lg-12 col-md-12">
+        <div style="font-size: 16px">
+          Устройство: <b>{{ data.device.ip }}</b>, {{ data.device.model.type === 'OLT' ? 'ОНУ' : 'порт' }}:
+          <b>{{ data.interface.name }}</b>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <OLT :data="data.detailed.olt" v-if="data.detailed.olt !== null"></OLT>
+      <SwitchDevice :data="data.detailed.switch" v-if="data.detailed.switch !== null"></SwitchDevice>
+    </div>
+    <h3 align="center" style="text-align: center; margin: 30px" v-else>{{ error }}</h3>
   </div>
 </template>
 
 <script>
-
+import ServerApi from "../../common/wildcore-api-client";
+import Preloader from "../Blocks/Preloader";
+import OLT from "./Blocks/OLT";
+import SwitchDevice from "./Blocks/SwitchDevice";
 
 export default {
+  components: {SwitchDevice, Preloader, OLT},
   name: 'wildcore-diag',
   props: {
     baseUrl: {
       type: String,
       default: '/api/v1'
+    },
+    authKey: {
+      type: String,
+      default: '',
+    },
+    deviceIp: {
+      type: String,
+      default: '10.15.1.2',
+    },
+    interface: {
+      type: String,
+      default: '16779015',
+    },
+  },
+  data() {
+    return {
+      data: null,
+      error: '',
+      api: null,
+      mustReload: false,
+      loading: true,
     }
+  },
+  watch: {
+    deviceIp: {
+      handler() {
+        this.mustReload = true
+      }
+    },
+    interface: {
+      handler() {
+        this.mustReload = true
+      }
+    },
+    mustReload: {
+      handler() {
+        setTimeout(() => {
+          this.startDiagnostic()
+        }, 10)
+      }
+    }
+  },
+  methods: {
+    async startDiagnostic() {
+      if (!this.deviceIp || !this.interface) return
+      this.loading = true
+      await this.api.post('/component/diagnostic/interface-diag', {
+        device: this.deviceIp,
+        interface: this.interface,
+      }).then(r => {
+        console.log(r.data)
+        this.data = r.data
+      }).catch((e) => {
+        this.error = e.message
+      }).finally(() => {
+        this.loading = false
+      })
+
+    }
+  },
+  mounted() {
+    this.api = new ServerApi(this.baseUrl)
+    this.api.setToken(this.authKey)
+    this.startDiagnostic()
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0; color: red;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-body {
-  background-color: #00F0F0;
-}
 </style>

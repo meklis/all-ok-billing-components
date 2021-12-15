@@ -24,6 +24,7 @@ export default {
       choosedComponent: null,
       components: [
         {name: "Diagnostic component", component:  () => import('./components/Diagnostic/Main')},
+        {name: "ChooseAddress", component:  () => import('./components/ChooseAddress/ChooseAddress')},
       ]
     }
   }
@@ -35,5 +36,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #F0F0F0;
 }
 </style>

@@ -6,13 +6,16 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build:wildcore-diag": "vue-cli-service build --name wildcore-diag  --target wc 'src/components/Diagnostic/Main.vue'"
+    "build:wildcore-diag": "vue-cli-service build --name wildcore-diag  --target wc 'src/components/Diagnostic/Main.vue'",
+    "build:choose-address": "vue-cli-service build --name choose-address  --target wc 'src/components/ChooseAddress/ChooseAddress.vue'"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^1.10.2",
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "pretty-bytes": "^5.6.0",
+    "vue": "^2.6.11",
+    "vue-multiselect": "^2.1.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
